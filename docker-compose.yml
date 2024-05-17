@@ -1,0 +1,60 @@
+services:
+  app1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app1:/var/www/html
+    ports:
+      - "8000:80"
+    environment:
+      - APP_ENV=local
+      - APP_KEY=0BNBWqORteyMRQ5lO3Tf5wEHZczYd4giuEJsW44jxcU=
+      - APP_URL=http://localhost:8000
+    depends_on:
+      - db
+
+  app2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app2:/var/www/html
+    ports:
+      - "8001:80"
+    environment:
+      - APP_ENV=local
+      - APP_KEY=base64:j3PmwXdnDc8HD4fiAytpHH9Ts6CaiPw+jc+eIXd/EQs=
+      - APP_URL=http://localhost:8001
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: docker
+      MYSQL_USER: user
+      MYSQL_PASSWORD: g12
+      MYSQL_ROOT_PASSWORD: g12
+
+  nginx1:
+    image: nginx:latest
+    volumes:
+      - ./nginx-config/nginx1.conf:/etc/nginx/default.conf
+      - ./app1:/usr/share/nginx/html/app1
+    ports:
+      - "8081:80"
+    depends_on:
+      - app1
+
+  nginx2:
+    image: nginx:latest
+    volumes:
+      - ./nginx-config/nginx2.conf:/etc/nginx/default.conf
+      - ./app2:/usr/share/nginx/html/app2
+    ports:
+      - "8082:80"
+    depends_on:
+      - app2
