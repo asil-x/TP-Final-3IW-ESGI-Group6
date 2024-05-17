@@ -36,8 +36,8 @@ services:
     environment:
       MYSQL_DATABASE: docker
       MYSQL_USER: user
-      MYSQL_PASSWORD: g12
-      MYSQL_ROOT_PASSWORD: g12
+      MYSQL_PASSWORD: user_pwd
+      MYSQL_ROOT_PASSWORD: user_pwd
 
   nginx1:
     image: nginx:latest
@@ -48,6 +48,7 @@ services:
       - "8081:80"
     depends_on:
       - app1
+      - db
 
   nginx2:
     image: nginx:latest
@@ -58,3 +59,4 @@ services:
       - "8082:80"
     depends_on:
       - app2
+      - db
